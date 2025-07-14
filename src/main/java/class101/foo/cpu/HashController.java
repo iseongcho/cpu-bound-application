@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -28,9 +27,18 @@ public class HashController {
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(input.getBytes());
         byte[] digest = md.digest();
-        String myHash = DatatypeConverter
-                .printHexBinary(digest).toUpperCase();
+        return bytesToHex(digest).toUpperCase();
+    }
 
-        return myHash;
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : bytes) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 }
